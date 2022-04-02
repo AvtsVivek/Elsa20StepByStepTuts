@@ -1,0 +1,33 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+
+    <p>
+        Workflows are configured for this application.
+        <br />
+        Click <a href="/hello">this link here</a> to invoke a simple workflow.
+        This workflow writes text to the response stream.
+        <br />
+    </p>
+
+    <p>
+        Clicking the following link invokes a different workflow.
+        <br />
+        This workflow sends a http request to a url and revieves a json response.
+        <br />
+        And the workflow writes back the recieved json back to the browser.
+        <br />
+        <a href="/helloworld">Click here to see that in action</a>
+        <br />
+        The url to which the workflow sends the request is hardcoded into the workflow.
+        
+    </p>
+
+
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>

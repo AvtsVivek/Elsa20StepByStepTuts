@@ -1,0 +1,616 @@
+{
+  "$id": "1",
+  "definitionId": "f2ca5e3047e94ac19f2f7eeb733015ee",
+  "versionId": "482075b4efbf47dda2c080470f344a09",
+  "name": "VisualDocumentApprovalWorkflow",
+  "displayName": "Visual Document Approval Workflow",
+  "description": "Visual Document Approval Workflow made from elsa dashboard",
+  "version": 5,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "Suspended",
+  "deleteCompletedInstances": false,
+  "isPublished": false,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "4740c201-5e29-4753-bdc0-74cc7d8fc173",
+      "type": "HttpEndpoint",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "Path",
+          "expressions": {
+            "$id": "6",
+            "Literal": "/v2/documents"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Methods",
+          "expressions": {
+            "$id": "8",
+            "Json": "[\"POST\"]"
+          }
+        },
+        {
+          "$id": "9",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "10",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "11",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "12"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "13",
+      "activityId": "f863a00d-59f3-48c1-ad09-61a03c7057b5",
+      "type": "SetVariable",
+      "displayName": "Set Variable",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "14",
+          "name": "VariableName",
+          "expressions": {
+            "$id": "15",
+            "Literal": "Document"
+          }
+        },
+        {
+          "$id": "16",
+          "name": "Value",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "17",
+            "JavaScript": "input.Body"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "18",
+      "activityId": "fce8b388-d7d8-4d51-a399-767240e09bfe",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "19",
+          "name": "From",
+          "expressions": {
+            "$id": "20",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "21",
+          "name": "To",
+          "expressions": {
+            "$id": "22",
+            "Json": "[\"josh@acme.com\"]"
+          }
+        },
+        {
+          "$id": "23",
+          "name": "Cc",
+          "expressions": {
+            "$id": "24"
+          }
+        },
+        {
+          "$id": "25",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "26"
+          }
+        },
+        {
+          "$id": "27",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "28",
+            "Liquid": "Document received from {{Variables.Document.Author.Name}}"
+          }
+        },
+        {
+          "$id": "29",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "30",
+            "Liquid": "Document from {{ Variables.Document.Author.Name }} received for review.<br><a href=\"{{ \"Approve\" | signal_url }}\">Approve</a> or <a href=\"{{ \"Reject\" | signal_url }}\">Reject</a>"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "31",
+      "activityId": "1c1a2df0-b1dc-42d4-81dd-83d1595288a5",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "32",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "33"
+          }
+        },
+        {
+          "$id": "34",
+          "name": "Content",
+          "expressions": {
+            "$id": "35",
+            "Literal": "<h1>Request for Approval Sent</h1><p>Your document has been received and will be reviewed shortly.</p>"
+          }
+        },
+        {
+          "$id": "36",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "37",
+            "Literal": "text/html"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "38",
+      "activityId": "bc4888ae-aa9f-4f69-a31e-aa16ee481417",
+      "type": "Fork",
+      "displayName": "Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "39",
+          "name": "Branches",
+          "expressions": {
+            "$id": "40",
+            "Json": "[\"Approve\",\"Remove\",\"Reject\"]"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "41",
+      "activityId": "2364b2fa-6602-4089-9e6c-d3a42ac9128d",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "42",
+          "name": "Signal",
+          "expressions": {
+            "$id": "43",
+            "Literal": "Approve"
+          }
+        },
+        {
+          "$id": "44",
+          "name": "Scope",
+          "expressions": {
+            "$id": "45"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "46",
+      "activityId": "b52cdeaa-b6f7-4213-9fe0-049172585481",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "47",
+          "name": "From",
+          "expressions": {
+            "$id": "48",
+            "Literal": "workflow@acme.com",
+            "JavaScript": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "49",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "50",
+            "JavaScript": "[Document.Author.Email]"
+          }
+        },
+        {
+          "$id": "51",
+          "name": "Cc",
+          "expressions": {
+            "$id": "52"
+          }
+        },
+        {
+          "$id": "53",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "54"
+          }
+        },
+        {
+          "$id": "55",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "56",
+            "Liquid": "Document {{ Variables.Document.Id }} Approved! "
+          }
+        },
+        {
+          "$id": "57",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "58",
+            "Literal": "Great job {{ Variables.Document.Author.Name }}, that document is perfect.",
+            "Liquid": "Great job {{ Variables.Document.Author.Name }}, that document is perfect."
+          }
+        }
+      ]
+    },
+    {
+      "$id": "59",
+      "activityId": "eaba7802-3a07-40af-8a25-ca6bcc8dbf38",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "60",
+          "name": "Signal",
+          "expressions": {
+            "$id": "61",
+            "Literal": "Reject"
+          }
+        },
+        {
+          "$id": "62",
+          "name": "Scope",
+          "expressions": {
+            "$id": "63"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "64",
+      "activityId": "cb7f9dcc-fb76-4938-a2c2-f95e816832c7",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "65",
+          "name": "From",
+          "expressions": {
+            "$id": "66",
+            "Literal": "workflow@acme.com",
+            "JavaScript": ""
+          }
+        },
+        {
+          "$id": "67",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "68",
+            "Json": "[]",
+            "JavaScript": "[Document.Author.Email]"
+          }
+        },
+        {
+          "$id": "69",
+          "name": "Cc",
+          "expressions": {
+            "$id": "70"
+          }
+        },
+        {
+          "$id": "71",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "72"
+          }
+        },
+        {
+          "$id": "73",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "74",
+            "Liquid": "Document {{ Variables.Document.Id }} Rejected"
+          }
+        },
+        {
+          "$id": "75",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "76",
+            "Liquid": "Nice try {{ Variables.Document.Author.Name }}, but that document needs work."
+          }
+        }
+      ]
+    },
+    {
+      "$id": "77",
+      "activityId": "be9d8900-9a30-44ac-8a11-2d040d62aa52",
+      "type": "Timer",
+      "displayName": "Timer",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "78",
+          "name": "Timeout",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "79",
+            "JavaScript": "Duration.FromSeconds(10)"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "80",
+      "activityId": "8502ddf6-32ec-45a9-b392-26646259b21b",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "81",
+          "name": "From",
+          "expressions": {
+            "$id": "82",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "83",
+          "name": "To",
+          "expressions": {
+            "$id": "84",
+            "JavaScript": "",
+            "Json": "[\"josh@acme.com\"]"
+          }
+        },
+        {
+          "$id": "85",
+          "name": "Cc",
+          "expressions": {
+            "$id": "86"
+          }
+        },
+        {
+          "$id": "87",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "88"
+          }
+        },
+        {
+          "$id": "89",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "90",
+            "Liquid": "{{ Variables.Document.Author.Name }} is waiting for your review!"
+          }
+        },
+        {
+          "$id": "91",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "92",
+            "Literal": "",
+            "Liquid": "Don't forget to review document {{ Variables.Document.Id }}.<br><a href=\"{{ \"Approve\" | signal_url }}\">Approve</a> or <a href=\"{{ \"Reject\" | signal_url }}\">Reject</a>"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "93",
+      "activityId": "3001b76f-c794-43f7-91ff-335fac963db9",
+      "type": "Join",
+      "displayName": "Join",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "94",
+          "name": "Mode",
+          "expressions": {
+            "$id": "95",
+            "Literal": "WaitAny"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "96",
+      "activityId": "b469dd83-6d56-4bc2-8aa5-134eb5eb9065",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "97",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "98"
+          }
+        },
+        {
+          "$id": "99",
+          "name": "Content",
+          "expressions": {
+            "$id": "100",
+            "Literal": "Thanks for the hard work!"
+          }
+        },
+        {
+          "$id": "101",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "102",
+            "Literal": "text/html"
+          }
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "$id": "103",
+      "sourceActivityId": "4740c201-5e29-4753-bdc0-74cc7d8fc173",
+      "targetActivityId": "f863a00d-59f3-48c1-ad09-61a03c7057b5",
+      "outcome": "Done"
+    },
+    {
+      "$id": "104",
+      "sourceActivityId": "f863a00d-59f3-48c1-ad09-61a03c7057b5",
+      "targetActivityId": "fce8b388-d7d8-4d51-a399-767240e09bfe",
+      "outcome": "Done"
+    },
+    {
+      "$id": "105",
+      "sourceActivityId": "fce8b388-d7d8-4d51-a399-767240e09bfe",
+      "targetActivityId": "1c1a2df0-b1dc-42d4-81dd-83d1595288a5",
+      "outcome": "Done"
+    },
+    {
+      "$id": "106",
+      "sourceActivityId": "1c1a2df0-b1dc-42d4-81dd-83d1595288a5",
+      "targetActivityId": "bc4888ae-aa9f-4f69-a31e-aa16ee481417",
+      "outcome": "Done"
+    },
+    {
+      "$id": "107",
+      "sourceActivityId": "bc4888ae-aa9f-4f69-a31e-aa16ee481417",
+      "targetActivityId": "2364b2fa-6602-4089-9e6c-d3a42ac9128d",
+      "outcome": "Approve"
+    },
+    {
+      "$id": "108",
+      "sourceActivityId": "2364b2fa-6602-4089-9e6c-d3a42ac9128d",
+      "targetActivityId": "b52cdeaa-b6f7-4213-9fe0-049172585481",
+      "outcome": "Done"
+    },
+    {
+      "$id": "109",
+      "sourceActivityId": "bc4888ae-aa9f-4f69-a31e-aa16ee481417",
+      "targetActivityId": "eaba7802-3a07-40af-8a25-ca6bcc8dbf38",
+      "outcome": "Remove"
+    },
+    {
+      "$id": "110",
+      "sourceActivityId": "eaba7802-3a07-40af-8a25-ca6bcc8dbf38",
+      "targetActivityId": "cb7f9dcc-fb76-4938-a2c2-f95e816832c7",
+      "outcome": "Done"
+    },
+    {
+      "$id": "111",
+      "sourceActivityId": "bc4888ae-aa9f-4f69-a31e-aa16ee481417",
+      "targetActivityId": "be9d8900-9a30-44ac-8a11-2d040d62aa52",
+      "outcome": "Reject"
+    },
+    {
+      "$id": "112",
+      "sourceActivityId": "be9d8900-9a30-44ac-8a11-2d040d62aa52",
+      "targetActivityId": "8502ddf6-32ec-45a9-b392-26646259b21b",
+      "outcome": "Done"
+    },
+    {
+      "$id": "113",
+      "sourceActivityId": "8502ddf6-32ec-45a9-b392-26646259b21b",
+      "targetActivityId": "be9d8900-9a30-44ac-8a11-2d040d62aa52",
+      "outcome": "Done"
+    },
+    {
+      "$id": "114",
+      "sourceActivityId": "b52cdeaa-b6f7-4213-9fe0-049172585481",
+      "targetActivityId": "3001b76f-c794-43f7-91ff-335fac963db9",
+      "outcome": "Done"
+    },
+    {
+      "$id": "115",
+      "sourceActivityId": "cb7f9dcc-fb76-4938-a2c2-f95e816832c7",
+      "targetActivityId": "3001b76f-c794-43f7-91ff-335fac963db9",
+      "outcome": "Done"
+    },
+    {
+      "$id": "116",
+      "sourceActivityId": "3001b76f-c794-43f7-91ff-335fac963db9",
+      "targetActivityId": "b469dd83-6d56-4bc2-8aa5-134eb5eb9065",
+      "outcome": "Done"
+    }
+  ],
+  "id": "482075b4efbf47dda2c080470f344a09"
+}

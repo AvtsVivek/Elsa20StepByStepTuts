@@ -1,0 +1,300 @@
+{
+  "$id": "1",
+  "definitionId": "7ce9eda52aca426db68bdd1c64d3a77b",
+  "versionId": "d43f9c52326c4465a13d4705a2e29ce1",
+  "name": "ChildBlockingWithSignalRecieved",
+  "displayName": "Child Blocking With Signal Recieved",
+  "description": "This workflow is based on the parent child workflow guide. Take a look at the following.\nhttps://elsa-workflows.github.io/elsa-core/docs/next/guides/guides-parent-child-workflows#child-workflow-2",
+  "version": 11,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "Suspended",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "4808cd79-57a2-45ce-b278-18d75b71b63a",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "Signal",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "6",
+            "Literal": "Resume",
+            "Liquid": "Resume-{{ Variables.ParentInput.Label }}"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Scope",
+          "expressions": {
+            "$id": "8"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "9",
+      "activityId": "e707372c-377a-4f1d-aa64-f52de740a4b7",
+      "type": "Finish",
+      "displayName": "Finish",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "10",
+          "name": "ActivityOutput",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "11",
+            "JavaScript": "({ Message: 'Hello parent!' })"
+          }
+        },
+        {
+          "$id": "12",
+          "name": "OutcomeNames",
+          "expressions": {
+            "$id": "13"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "14",
+      "activityId": "3b07fe38-2b8a-4d27-bb87-580fc088a1b1",
+      "type": "SetVariable",
+      "displayName": "Set Variable",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "15",
+          "name": "VariableName",
+          "expressions": {
+            "$id": "16",
+            "Literal": "ParentInput"
+          }
+        },
+        {
+          "$id": "17",
+          "name": "Value",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "18",
+            "JavaScript": "input"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "19",
+      "activityId": "563958aa-8da9-4ad2-aa65-5a8fd4a4259e",
+      "type": "WriteLine",
+      "displayName": "Write Line",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "20",
+          "name": "Text",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "21",
+            "Liquid": "Parent says: \"{{ Variables.ParentInput.Message }}\".\r\nMy workflow instance ID is: {{ WorkflowInstanceId }}"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "22",
+      "activityId": "7184a0ec-0d23-4112-b51f-b6473c0ec860",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "23",
+          "name": "From",
+          "expressions": {
+            "$id": "24",
+            "Literal": "hostadmin.workflows@Mewurk.com"
+          }
+        },
+        {
+          "$id": "25",
+          "name": "To",
+          "expressions": {
+            "$id": "26",
+            "Json": "[\"some@other.com\"]"
+          }
+        },
+        {
+          "$id": "27",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "28",
+            "Literal": "From Child Workflow",
+            "Liquid": "From Child \"{{ Variables.ParentInput.Label }}\"."
+          }
+        },
+        {
+          "$id": "29",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "30"
+          }
+        },
+        {
+          "$id": "31",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "32",
+            "Liquid": "Parent says: \"{{ Variables.ParentInput.Message }}\".\r\n<br />\r\nMy workflow instance ID is: {{ WorkflowInstanceId }}\r\n<br />\r\nI am now suspended by a signal received activity. \r\n<br />\r\nUse Postman to send a post request to the following url to resume this pirticular workflow\r\n<br />\r\nv1/signals/resume-{{ Variables.ParentInput.Label }}/execute\r\n<br />\r\n{<br />\r\n    \"workflowInstanceId\": \"{{ WorkflowInstanceId }}\"\r\n<br />}\r\n"
+          }
+        },
+        {
+          "$id": "33",
+          "name": "Cc",
+          "expressions": {
+            "$id": "34"
+          }
+        },
+        {
+          "$id": "35",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "36"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "37",
+      "activityId": "8860f636-eacb-4b2f-b0a9-cfe2f73b7abb",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "38",
+          "name": "From",
+          "expressions": {
+            "$id": "39",
+            "Literal": "hostadmin.workflows@Mewurk.com"
+          }
+        },
+        {
+          "$id": "40",
+          "name": "To",
+          "expressions": {
+            "$id": "41",
+            "Json": "[\"someone@asdf.com\"]"
+          }
+        },
+        {
+          "$id": "42",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "43",
+            "Liquid": "From Child \"{{ Variables.ParentInput.Label }}\"."
+          }
+        },
+        {
+          "$id": "44",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "45"
+          }
+        },
+        {
+          "$id": "46",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "47",
+            "Literal": "",
+            "Liquid": "This child {{ Variables.ParentInput.Label }} workflow is ending. Back to Parent."
+          }
+        },
+        {
+          "$id": "48",
+          "name": "Cc",
+          "expressions": {
+            "$id": "49"
+          }
+        },
+        {
+          "$id": "50",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "51"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    }
+  ],
+  "connections": [
+    {
+      "$id": "52",
+      "sourceActivityId": "3b07fe38-2b8a-4d27-bb87-580fc088a1b1",
+      "targetActivityId": "563958aa-8da9-4ad2-aa65-5a8fd4a4259e",
+      "outcome": "Done"
+    },
+    {
+      "$id": "53",
+      "sourceActivityId": "563958aa-8da9-4ad2-aa65-5a8fd4a4259e",
+      "targetActivityId": "7184a0ec-0d23-4112-b51f-b6473c0ec860",
+      "outcome": "Done"
+    },
+    {
+      "$id": "54",
+      "sourceActivityId": "7184a0ec-0d23-4112-b51f-b6473c0ec860",
+      "targetActivityId": "4808cd79-57a2-45ce-b278-18d75b71b63a",
+      "outcome": "Done"
+    },
+    {
+      "$id": "55",
+      "sourceActivityId": "4808cd79-57a2-45ce-b278-18d75b71b63a",
+      "targetActivityId": "8860f636-eacb-4b2f-b0a9-cfe2f73b7abb",
+      "outcome": "Done"
+    },
+    {
+      "$id": "56",
+      "sourceActivityId": "8860f636-eacb-4b2f-b0a9-cfe2f73b7abb",
+      "targetActivityId": "e707372c-377a-4f1d-aa64-f52de740a4b7",
+      "outcome": "Done"
+    }
+  ],
+  "id": "d43f9c52326c4465a13d4705a2e29ce1"
+}

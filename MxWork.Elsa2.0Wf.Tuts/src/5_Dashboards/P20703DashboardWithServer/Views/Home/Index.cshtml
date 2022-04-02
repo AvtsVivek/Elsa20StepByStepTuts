@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewData["Title"] = "Home Workflow";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+
+    <p>
+        Elsa Workflows is configured for this application.
+        <br />
+        This example is built based on the
+        <a target="_blank" href="https://elsa-workflows.github.io/elsa-core/docs/next/quickstarts/quickstarts-aspnetcore-server-api-endpoints">Elsa Guide Here</a>.
+        <br />
+        In Visual Studio select IIS Express launch profile so that the url is http://localhost:26284/ and not https://localhost:5001 or http://localhost:5000
+        <br />
+        Click the following link to elsa workflows dashboard.
+        <br />
+        <a target="_blank" href="/Elsa/Workflows">Elsa Workflow</a>
+        <br />
+        You can try the following workflows one after another. The json files are available in the source code repo along with this project. Take a look inside 'WorkflowDefs' folder.
+        <br />
+        workflow-definition-signal-trials.json
+        <br />
+        workflow-definition-child-workflow-fire-and-forget.json and workflow-definition-parent-workflow-fire-and-forget.json
+        <br />
+        workflow-definition-child-workflow-blocking.json and workflow-definition-parent-workflow-blocking-on-child.json
+        <br />
+        <br />
+        <br />
+        <br />
+        <u>Now for the Elsa Api.</u>
+        <br />
+        Api end points are configured. Open Startup.cs file and find the following line.
+        <br />
+        services.AddElsaApiEndpoints();
+        <br />
+        <a target="_blank" href="/v1/workflow-definitions">Workflow Definitions</a>
+        <br />
+        <a target="_blank" href="/v1/Workflow-instances">Workflow instances</a>
+        <br />
+        <a target="_blank" href="/v1/Workflow-registry">Workflow registry</a>
+        <br />
+        <a target="_blank" href="/v1/activities">Activities</a>
+        <br />
+        Finally, swagger is also configured. Open Startup.cs file and find the following 3 lines of code.
+        <br /> services.AddElsaSwagger();
+        <br /> app.UseSwagger();
+        <br /> app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Elsa"));
+        <br /> <a target="_blank" href="/swagger/index.html">Swagger UI</a>
+        <br /> <a target="_blank" href="/api-customroute/v1/swagger.json">Swagger Json</a>
+    </p>
+       
+
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // alert("Jquery is working fine dude...");
+        });
+
+        function GetAndSetWorkflowDetails() {
+
+        }
+
+    </script>
+}

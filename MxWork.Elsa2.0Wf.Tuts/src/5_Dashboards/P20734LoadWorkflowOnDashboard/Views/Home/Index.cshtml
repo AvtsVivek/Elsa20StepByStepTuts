@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewData["Title"] = "Home Workflow";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+
+    <p>
+        Elsa Workflows Dashboard is configured for this application.
+        <br />
+        This example is built based on the
+        <br />
+        <a target="_blank" href="https://sipkeschoorstra.medium.com/whats-new-in-elsa-2-0-ea7410b65eea">Whats new in Elsa 2.0</a>.
+        <br />
+        In that page, take a look at the section, Coded Workflows visualization thanks to auto-layout
+        <br />
+        Click the following link to elsa workflows dashboard.
+        <br />
+        <a target="_blank" href="/Elsa/Workflows">Elsa Workflow</a>
+        <br />
+        On that page, you should see three tabs, Workflow Definitions, Workflow Instances and Workflow Registry.
+        <br />
+        Click on Workflow Registry tab.
+        <br />
+        Select a workflow from the below drop down. Then click the button next to it to load it to the registry.
+        <br />
+        After that click the Workflow Registry on the Elsa Workflows Dashboard.
+        <br />
+        <select id="workflowListDropDown" class="js-example-basic-single" name="workflowDropDown"></select>
+        <button id="btnLoadWorkflow" class="btn btn-primary" onclick="LoadWorkflowIntoWorkflowRegistry()">Load selected workflow into elsa registry</button>
+        <br />
+        Click the following button to get json for the loaded workflow. The same text is also copied to clip board.
+        <br />
+        <button id="btnGetJsonForLoadedWorkflow" class="btn btn-primary" onclick="GetJsonForLoadedWorkflow()">Get Json for Loaded Workflow</button>
+        <br />
+        <textarea id="workflowJson" cols="100" rows="50">
+
+        </textarea>
+
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    </p>
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetWorkflowsList();
+        });
+
+        function GetWorkflowsList() {
+            var getWorkflowsListUrl = "/api/LoadUnload/GetWorkflowsList"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowsListUrl,
+                dataType: "json",
+                success: function (msg) {
+
+                    $.each(msg, function (index, value) {
+                        $('#workflowListDropDown').append(new Option(value, value));
+                    });
+
+                    $('#workflowListDropDown').select2();
+
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        function copyToClipboard(text) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(text).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        function GetJsonForLoadedWorkflow() {
+            var selectedWorkflow = $("#workflowListDropDown").val();
+            var loadWorkflowUrl = "/api/LoadUnload/GetJsonForLoadedWorkflow/" + selectedWorkflow;
+
+            $.ajax({
+                type: "GET",
+                url: loadWorkflowUrl,
+                //contentType: requestDataType,
+                //dataType: "json",
+                //data: JSON.stringify(data),
+                success: function (msg) {
+                    $("#workflowJson").text(msg)
+                    copyToClipboard(msg);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        function LoadWorkflowIntoWorkflowRegistry() {
+            var requestDataType = 'application/json; charset=utf-8';
+            var loadWorkflowUrl = "/api/LoadUnload/LoadWorkflowIntoRegistry"
+
+            var selectedWorkflowToLoad = $("#workflowListDropDown").val();
+            var postData = { WorkflowName: selectedWorkflowToLoad };
+
+            $.ajax({
+                type: "POST",
+                url: loadWorkflowUrl,
+                dataType: "json",
+                contentType: requestDataType,
+                dataType: "json",
+                data: JSON.stringify(postData),
+                success: function (msg) {
+                    //alert(JSON.stringify(msg));
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+    </script>
+}

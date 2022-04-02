@@ -1,0 +1,167 @@
+{
+  "$id": "1",
+  "definitionId": "f5d16b4fc9714e85b95ba3767f6a7cd4",
+  "versionId": "60800522d7004357a6233d1fc3d016fc",
+  "name": "FileReceived",
+  "displayName": "File Received",
+  "version": 9,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "1c1c93e8-b44b-496b-a413-fa15495aa439",
+      "type": "FileReceived",
+      "name": "FileReceived1",
+      "displayName": "File Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": []
+    },
+    {
+      "$id": "5",
+      "activityId": "95e83e14-966f-464a-b883-6c97684bb71f",
+      "type": "SetVariable",
+      "displayName": "Set Variable",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "6",
+          "name": "VariableName",
+          "expressions": {
+            "$id": "7",
+            "Literal": "FileData"
+          }
+        },
+        {
+          "$id": "8",
+          "name": "Value",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "9",
+            "JavaScript": "input"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "10",
+      "activityId": "9a2f2855-2b9f-4264-be40-d1860b34a8c7",
+      "type": "WriteLine",
+      "displayName": "Write Line",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "11",
+          "name": "Text",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "12",
+            "JavaScript": "`File received with file name ${FileData.FileName} and mime type as ${FileData.MimeType}`"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "13",
+      "activityId": "64be1849-9f23-4bfa-ab55-ee65c1362b13",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "14",
+          "name": "From",
+          "expressions": {
+            "$id": "15",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "16",
+          "name": "To",
+          "expressions": {
+            "$id": "17",
+            "Json": "[\"someone@gmail.com\"]"
+          }
+        },
+        {
+          "$id": "18",
+          "name": "Cc",
+          "expressions": {
+            "$id": "19"
+          }
+        },
+        {
+          "$id": "20",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "21"
+          }
+        },
+        {
+          "$id": "22",
+          "name": "Subject",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "23",
+            "Literal": "Document Recieved",
+            "JavaScript": "`File received with file name ${FileData.FileName} and mime type as ${FileData.MimeType}`"
+          }
+        },
+        {
+          "$id": "24",
+          "name": "Body",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "25",
+            "JavaScript": "`File received with file name ${FileData.FileName} and mime type as ${FileData.MimeType}`"
+          }
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "$id": "26",
+      "sourceActivityId": "1c1c93e8-b44b-496b-a413-fa15495aa439",
+      "targetActivityId": "95e83e14-966f-464a-b883-6c97684bb71f",
+      "outcome": "Done"
+    },
+    {
+      "$id": "27",
+      "sourceActivityId": "95e83e14-966f-464a-b883-6c97684bb71f",
+      "targetActivityId": "9a2f2855-2b9f-4264-be40-d1860b34a8c7",
+      "outcome": "Done"
+    },
+    {
+      "$id": "28",
+      "sourceActivityId": "9a2f2855-2b9f-4264-be40-d1860b34a8c7",
+      "targetActivityId": "64be1849-9f23-4bfa-ab55-ee65c1362b13",
+      "outcome": "Done"
+    }
+  ],
+  "id": "60800522d7004357a6233d1fc3d016fc"
+}

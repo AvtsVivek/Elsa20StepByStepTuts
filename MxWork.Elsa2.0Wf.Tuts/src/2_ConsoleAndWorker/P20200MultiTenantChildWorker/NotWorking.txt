@@ -1,0 +1,5 @@
+﻿The consumer workflow is not recieving the messages. 
+Not sure why
+
+Upgraded to the just released 2.0.0-rc2.73. Now its working.
+Earlier the version is 2.0.0-rc1.31. It was not working then.

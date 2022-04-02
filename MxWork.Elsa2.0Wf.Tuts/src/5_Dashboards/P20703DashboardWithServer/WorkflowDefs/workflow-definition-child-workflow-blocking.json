@@ -1,0 +1,260 @@
+{
+  "$id": "1",
+  "definitionId": "cfd19c10589c435d90c2252ac21606d0",
+  "versionId": "613f073574924866849e4993d27f9584",
+  "name": "ChildWorkflowBlocking",
+  "displayName": "Child Workflow Blocking",
+  "description": "A Child Workflow which responds to a message from Parent workflow.\nThis needs a parent workflow. So this example has a corresponding parent workflow ParentWorkflowBlockingOnChild\nThis is created while doing the following tutorial.\n\nhttps://elsa-workflows.github.io/elsa-core/docs/next/guides/guides-parent-child-workflows#child-workflow-1",
+  "version": 1,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "Suspended",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "68a6181c-cb7c-441f-9dea-3872203accce",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "6"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Content",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "8",
+            "Literal": "",
+            "Liquid": "<pre>\r\nParent says: \"{{ Input.Message }}\"\r\nMy workflow instance ID is: {{ WorkflowInstanceId }}\r\n<pre>"
+          }
+        },
+        {
+          "$id": "9",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "10",
+            "Literal": "text/html"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "11",
+      "activityId": "67c36e8f-b8cb-4bff-843d-3cb34f3c04a9",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "12",
+          "name": "Signal",
+          "expressions": {
+            "$id": "13",
+            "Literal": "resume"
+          }
+        },
+        {
+          "$id": "14",
+          "name": "Scope",
+          "expressions": {
+            "$id": "15"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "16",
+      "activityId": "18748d6c-42fd-4a21-a1e2-63090e646ca1",
+      "type": "Finish",
+      "displayName": "Finish",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "17",
+          "name": "OutcomeNames",
+          "expressions": {
+            "$id": "18"
+          }
+        },
+        {
+          "$id": "19",
+          "name": "ActivityOutput",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "20",
+            "Literal": "",
+            "JavaScript": "({ Message: 'Hello parent!' })"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "21",
+      "activityId": "b2fc368c-2364-48ef-8c69-45f53d146c34",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "22",
+          "name": "From",
+          "expressions": {
+            "$id": "23",
+            "Literal": "hostadmin.workflows@Mewurk.com"
+          }
+        },
+        {
+          "$id": "24",
+          "name": "To",
+          "expressions": {
+            "$id": "25",
+            "Json": "[\"child@workflow.como\"]"
+          }
+        },
+        {
+          "$id": "26",
+          "name": "Cc",
+          "expressions": {
+            "$id": "27"
+          }
+        },
+        {
+          "$id": "28",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "29"
+          }
+        },
+        {
+          "$id": "30",
+          "name": "Subject",
+          "expressions": {
+            "$id": "31",
+            "Literal": "from child workflow before"
+          }
+        },
+        {
+          "$id": "32",
+          "name": "Body",
+          "expressions": {
+            "$id": "33",
+            "Literal": "from child workflow before the signal"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "34",
+      "activityId": "5d68e18c-b4ab-43f1-aa9c-0d51b051529e",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "35",
+          "name": "From",
+          "expressions": {
+            "$id": "36",
+            "Literal": "hostadmin.workflows@Mewurk.com"
+          }
+        },
+        {
+          "$id": "37",
+          "name": "To",
+          "expressions": {
+            "$id": "38",
+            "Json": "[\"childworkflow@woasdf.com\"]"
+          }
+        },
+        {
+          "$id": "39",
+          "name": "Cc",
+          "expressions": {
+            "$id": "40"
+          }
+        },
+        {
+          "$id": "41",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "42"
+          }
+        },
+        {
+          "$id": "43",
+          "name": "Subject",
+          "expressions": {
+            "$id": "44",
+            "Literal": "from child workflow after signal "
+          }
+        },
+        {
+          "$id": "45",
+          "name": "Body",
+          "expressions": {
+            "$id": "46",
+            "Literal": "from child workflow after signal "
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    }
+  ],
+  "connections": [
+    {
+      "$id": "47",
+      "sourceActivityId": "68a6181c-cb7c-441f-9dea-3872203accce",
+      "targetActivityId": "b2fc368c-2364-48ef-8c69-45f53d146c34",
+      "outcome": "Done"
+    },
+    {
+      "$id": "48",
+      "sourceActivityId": "b2fc368c-2364-48ef-8c69-45f53d146c34",
+      "targetActivityId": "67c36e8f-b8cb-4bff-843d-3cb34f3c04a9",
+      "outcome": "Done"
+    },
+    {
+      "$id": "49",
+      "sourceActivityId": "67c36e8f-b8cb-4bff-843d-3cb34f3c04a9",
+      "targetActivityId": "5d68e18c-b4ab-43f1-aa9c-0d51b051529e",
+      "outcome": "Done"
+    },
+    {
+      "$id": "50",
+      "sourceActivityId": "5d68e18c-b4ab-43f1-aa9c-0d51b051529e",
+      "targetActivityId": "18748d6c-42fd-4a21-a1e2-63090e646ca1",
+      "outcome": "Done"
+    }
+  ],
+  "id": "613f073574924866849e4993d27f9584"
+}

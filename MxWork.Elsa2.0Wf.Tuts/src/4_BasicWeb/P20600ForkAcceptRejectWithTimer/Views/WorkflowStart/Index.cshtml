@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Start Workflow";
+}
+
+<div class="text-left">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+    <p>
+        Workflow is configured for this application. Click the following start button to start an instance.
+    </p>
+    <br />
+    <label id="lblTimer"></label>
+    <br />
+
+    <table align="left" width="500" border="1">
+
+        <tr align="center">
+            <td colspan="3">
+                <button id="workflowStartButton" class="btn btn-primary" onclick="StartApproveRejectTimerWorkflowInstance('start')">Start</button>
+            </td>
+        </tr>
+        <tr align="center">
+            <td id="messageAfterStartOfWorkflow" colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <button id="workflowApproveButton" class="btn btn-primary" onclick="StartApproveRejectTimerWorkflowInstance('approve')">Approve</button>
+            </td>
+            <td align="center">&nbsp;</td>
+            <td align="center">
+                <button id="workflowRejectButton" class="btn btn-primary" onclick="StartApproveRejectTimerWorkflowInstance('reject')">Reject</button>
+            </td>
+        </tr>
+        <tr align="center">
+            <td colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+        <tr align="center">
+            <td id="finalMessageFromWorkflow" colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+
+        <tr align="center">
+            <td id="finalMessage" colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+    </table>
+
+
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#workflowStartButton').prop('disabled', false);
+            $('#messageAfterStartOfWorkflow').html('&nbsp;');
+            $('#workflowApproveButton').prop('disabled', true);
+            $('#workflowRejectButton').prop('disabled', true);
+        });
+
+
+        function StartTimer(minutes, seconds) {
+
+            var timer2 = minutes + ":" + seconds;
+            interval = setInterval(function () {
+
+                var timer = timer2.split(':');
+                var minutes = parseInt(timer[0], 10);
+                var seconds = parseInt(timer[1], 10);
+                --seconds;
+                minutes = (seconds < 0) ? --minutes : minutes;
+
+                if (minutes < 0) {
+                    clearInterval(interval);
+                    interval = null;
+                    $('#finalMessage').html("Its likely that the workflow is completed because of timer timeout. Check by clicking the Get workflow details button on Home index page");
+                    $('#workflowApproveButton').prop('disabled', true);
+                    $('#workflowRejectButton').prop('disabled', true);
+                }
+                seconds = (seconds < 0) ? 59 : seconds;
+                seconds = (seconds < 10) ? '0' + seconds : seconds;
+                $('#lblTimer').html(minutes + ':' + seconds);
+                timer2 = minutes + ':' + seconds;
+            }, 1000);
+        }
+
+        function StartApproveRejectTimerWorkflowInstance(command) {
+
+            var getWorkflowStartUrl = "";
+
+            if (command === 'start')
+                getWorkflowStartUrl = "/StartTimerHttpWorkflow";
+
+            if (command === 'approve') {
+                var approveUrl = $("#workflowApproveButton").data("approveUrl");
+                getWorkflowStartUrl = "/" + approveUrl;
+            }
+
+            if (command === 'reject') {
+                var rejectUrl = $("#workflowRejectButton").data("rejectUrl");
+                getWorkflowStartUrl = "/" + rejectUrl;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: getWorkflowStartUrl,
+                success: function (msg) {
+                    if (command === 'start') {
+                        $('#workflowStartButton').prop('disabled', true);
+
+                        var workflowInfo = JSON.parse(msg);
+
+                        //alert(workflowInfo.message);
+                        //alert(workflowInfo.signalUrl);
+                        //alert(workflowInfo.totalTimeout);
+                        //alert(workflowInfo.timeoutDays);
+                        //alert(workflowInfo.timeoutHours);
+                        //alert(workflowInfo.timeoutMinutes);
+                        //alert(workflowInfo.timeoutSeconds);                        
+                        //alert(workflowInfo.ApproveUrl);
+
+                        StartTimer(workflowInfo.timeoutMinutes, workflowInfo.timeoutSeconds);
+                        $('#workflowApproveButton').prop('disabled', false);
+                        $('#workflowRejectButton').prop('disabled', false);
+                        $('#messageAfterStartOfWorkflow').html(workflowInfo.message);
+                        $("#workflowApproveButton").data("approveUrl", workflowInfo.ApproveUrl);
+                        $("#workflowRejectButton").data("rejectUrl", workflowInfo.RejectUrl);
+                    }
+
+                    if (command === 'approve' || command === 'reject') {
+                        clearInterval(interval);
+                        interval = null;
+
+                        $('#workflowApproveButton').prop('disabled', true);
+                        $('#workflowRejectButton').prop('disabled', true);
+
+                        $('#finalMessageFromWorkflow').html(msg);
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+            
+        }
+        </script>
+}

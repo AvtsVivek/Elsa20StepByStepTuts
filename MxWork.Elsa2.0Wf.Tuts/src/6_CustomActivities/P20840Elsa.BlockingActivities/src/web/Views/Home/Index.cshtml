@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewData["Title"] = "Home Workflow";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+
+    <p>
+        Elsa Workflows is configured for this application.
+        <br />
+        This example is built based on the
+        <a target="_blank" href="https://elsa-workflows.github.io/elsa-core/docs/next/guides/guides-blocking-activities">Elsa Guide Here</a>.
+        <br />
+        In Visual Studio select IIS Express launch profile so that the url is http://localhost:26284/ and not https://localhost:5001 or http://localhost:5000
+        <br />
+        Click the following link to elsa workflows dashboard.
+        <br />
+        <a target="_blank" href="/Elsa/Workflows">Elsa Workflow</a>
+        <br />
+        Create a file recieved workflow and name it FileRecieved. Without this, the number of workflows running will always be 0
+        <br />
+        <u>Now for the Elsa Api.</u>
+        <br />
+        Api end points are configured. Open Startup.cs file and find the following line.
+        <br />
+        services.AddElsaApiEndpoints();
+        <br />
+        <a target="_blank" href="/v1/workflow-definitions">Workflow Definitions</a>, <a target="_blank" href="/v1/Workflow-instances">Workflow instances</a>, <a target="_blank" href="/v1/Workflow-registry">Workflow registry</a>, <a target="_blank" href="/v1/activities">Activities</a>
+        <br />
+        <u> Swagger is also configured.</u>
+        Open Startup.cs file and find the following 3 lines of code.
+        <br /> services.AddElsaSwagger();
+        <br /> app.UseSwagger();
+        <br /> app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Elsa"));
+        <br /> <a target="_blank" href="/swagger/index.html">Swagger UI</a>, <a target="_blank" href="/api-customroute/v1/swagger.json">Swagger Json</a>
+    </p>
+
+
+
+    <button class="btn btn-primary" onclick="GetAndSetWorkflowDetails()">Get workflow details</button>
+    <br />
+    <br />
+    <span>
+        <label>No of workflows running: </label>
+        <label class="label label-default" id="workflowCountLabel"></label>
+    </span>
+
+    <table class="table table-bordered" id="workflowDetailsTable">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">id</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // alert("Jquery is working fine dude...");
+            $("#workflowCountLabel").text(0);
+            $("#workflowDetailsTable").hide();
+        });
+
+        function GetAndSetWorkflowDetails() {
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowInstanceCount"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+                    $("#workflowCountLabel").text(msg);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+
+            
+
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowDetails"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+
+                    $("#workflowDetailsTable").hide();
+
+                    if (msg.wfInstances !== null) {
+                        $("#workflowDetailsTable").show();
+
+                        $("#workflowDetailsTable").find('tbody').empty();
+                        msg.wfInstances.forEach(function (item, index, array) {
+                            $("#workflowDetailsTable").find('tbody')
+                                .append($('<tr>')
+                                    .append($('<td>')
+                                        .text(index)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.id)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.status)
+                                    )
+                                );
+                        });
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+    </script>
+}

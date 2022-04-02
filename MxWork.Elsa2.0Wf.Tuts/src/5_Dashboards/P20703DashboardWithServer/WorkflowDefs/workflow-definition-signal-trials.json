@@ -1,0 +1,237 @@
+{
+  "$id": "1",
+  "definitionId": "36f9cc3994784f6e90c4fccb76aac39c",
+  "versionId": "c820a96356f444fa8c2e603c13f6d52f",
+  "name": "SignalTrials",
+  "displayName": "Signal Trials",
+  "description": "To run this example, first send a http GET request to /workflows/signaltrials. The 'workflows' here comes from the appsettings.json file. If Elsa.Server.BasePath is set to something else, then that must come in place of 'workflows'. If that is not set, then just send a GET request to /signaltrials. Once that is done, an instance must have started, take a look at your data store and note down the instance id.\nNow the workflow is suspended at signal received activity waiting for a signal. Now to send a signal, you need to send a http POST request using something like Postman. \nhttp://localhost:26284/v1/signals/resume/execute\nA header with content type of  application/json must be set. In the body the following must be sent with raw data type. Your workflow instance id will be different. Put that one here.\n{\n    \"workflowInstanceId\": \"e0a6e574c74f4bba842392c808965ee9\"\n}",
+  "version": 2,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "ca2456f0-63b2-4847-8b74-b2e7ce8d5273",
+      "type": "HttpEndpoint",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "Path",
+          "expressions": {
+            "$id": "6",
+            "Literal": "/signaltrials"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Methods",
+          "expressions": {
+            "$id": "8",
+            "Json": "[\"GET\"]"
+          }
+        },
+        {
+          "$id": "9",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "10"
+          }
+        },
+        {
+          "$id": "11",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "12"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "13",
+      "activityId": "fecd14bc-c8ea-4d56-8a05-ba6371c2b449",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "14",
+          "name": "From",
+          "expressions": {
+            "$id": "15",
+            "Literal": "hostadmin.workflows@Mewurk.com"
+          }
+        },
+        {
+          "$id": "16",
+          "name": "To",
+          "expressions": {
+            "$id": "17",
+            "Json": "[\"asdf@asdfasdf.com\"]"
+          }
+        },
+        {
+          "$id": "18",
+          "name": "Cc",
+          "expressions": {
+            "$id": "19"
+          }
+        },
+        {
+          "$id": "20",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "21"
+          }
+        },
+        {
+          "$id": "22",
+          "name": "Subject",
+          "expressions": {
+            "$id": "23",
+            "Literal": "asdfasdf"
+          }
+        },
+        {
+          "$id": "24",
+          "name": "Body",
+          "expressions": {
+            "$id": "25",
+            "Literal": "asdfasdfasdfasdf"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "26",
+      "activityId": "6422272f-01e2-421f-8c4c-b49e1332ca10",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "27",
+          "name": "Signal",
+          "expressions": {
+            "$id": "28",
+            "Literal": "resume"
+          }
+        },
+        {
+          "$id": "29",
+          "name": "Scope",
+          "expressions": {
+            "$id": "30"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "31",
+      "activityId": "e75491ce-7e7d-4a35-b3b5-e78cd4c34b14",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "32",
+          "name": "From",
+          "expressions": {
+            "$id": "33",
+            "Literal": "hostadmin.workflows@Mewurk.com"
+          }
+        },
+        {
+          "$id": "34",
+          "name": "To",
+          "expressions": {
+            "$id": "35",
+            "Json": "[\"someone@some.com\"]"
+          }
+        },
+        {
+          "$id": "36",
+          "name": "Subject",
+          "expressions": {
+            "$id": "37",
+            "Literal": "Waiting at signal received"
+          }
+        },
+        {
+          "$id": "38",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "39"
+          }
+        },
+        {
+          "$id": "40",
+          "name": "Body",
+          "expressions": {
+            "$id": "41",
+            "Literal": "Send a signal to the workflow to resume. \n\nSend a http POST request to v1/signals/resume/execute\n\nThe complete url should look like this.\n\nhttp://localhost:26284/v1/signals/resume/execute\n\nIn the body, put the correct workflow instance id. Select raw to be the format.\n\n{\n    \"workflowInstanceId\": \"e92f065c5e664a3fa559a87010ece4d2\"\n}\n\nThe content type must be set to application/json"
+          }
+        },
+        {
+          "$id": "42",
+          "name": "Cc",
+          "expressions": {
+            "$id": "43"
+          }
+        },
+        {
+          "$id": "44",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "45"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    }
+  ],
+  "connections": [
+    {
+      "$id": "46",
+      "sourceActivityId": "6422272f-01e2-421f-8c4c-b49e1332ca10",
+      "targetActivityId": "fecd14bc-c8ea-4d56-8a05-ba6371c2b449",
+      "outcome": "Done"
+    },
+    {
+      "$id": "47",
+      "sourceActivityId": "ca2456f0-63b2-4847-8b74-b2e7ce8d5273",
+      "targetActivityId": "e75491ce-7e7d-4a35-b3b5-e78cd4c34b14",
+      "outcome": "Done"
+    },
+    {
+      "$id": "48",
+      "sourceActivityId": "e75491ce-7e7d-4a35-b3b5-e78cd4c34b14",
+      "targetActivityId": "6422272f-01e2-421f-8c4c-b49e1332ca10",
+      "outcome": "Done"
+    }
+  ],
+  "id": "c820a96356f444fa8c2e603c13f6d52f"
+}

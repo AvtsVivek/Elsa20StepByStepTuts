@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewData["Title"] = "Home Workflow";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+
+    <p>
+        Elsa Dashboard is configured for this app.
+
+        <br />
+        The server url is not configured, so this app does nothing.
+
+        <br />
+        Only demos the dashboard.
+        <br />
+        To start click the following link.
+        A new tab should be opened in the browser which shows the dahsboard
+        <br />
+        <br />
+        <a target="_blank" href="/Elsa/Workflows">Elsa Workflow</a>
+        <br />
+    </p>
+    
+    <table class="table table-bordered" id="workflowDetailsTable">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">id</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //alert("Jquery is working fine dude...");
+            $("#workflowCorrelationsTable").hide();
+            $("#workflowCorrelationsTableFootNotes").hide();
+            $("#workflowCountLabel").text(0);
+            $("#workflowDetailsTable").hide();
+            workflowArray = []; // id, name, status, correlationId
+        });
+
+        function GetAndSetWorkflowDetails() {
+
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowInstanceCount"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+                    $("#workflowCountLabel").text(msg);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowDetails"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+
+                    $("#workflowDetailsTable").hide();
+
+                    if (msg.wfInstances !== null) {
+                        $("#workflowDetailsTable").show();
+
+                        $("#workflowDetailsTable").find('tbody').empty();
+                        msg.wfInstances.forEach(function (item, index, array) {
+                            $("#workflowDetailsTable").find('tbody')
+                                .append($('<tr>')
+                                    .append($('<td>')
+                                        .text(index)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.id)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.status)
+                                    )
+                                );
+                        });
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+    </script>
+}

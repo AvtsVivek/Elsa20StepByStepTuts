@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewData["Title"] = "Home Workflow";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+
+    <p>
+        Workflow is configured for this application.
+
+        <br />
+
+        This is based on the <a target="_blank" href="https://elsa-workflows.github.io/elsa-core/docs/next/quickstarts/quickstarts-aspnetcore-server-api-endpoints">example here.</a>
+
+        <br />
+
+        This demos api as follows.
+
+        <br />
+
+        If you are using chrome, then an extension<a target="_blank" href="https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa/related?hl=en">, which formats the json response, like this may help.</a>
+
+        <br />
+
+        <a target="_blank" href="/v1/workflow-registry">Workflow Registry</a>
+
+        <br />
+
+        <a target="_blank" href="/v1/workflow-registry/HeartbeatWorkflow">Get Single Workflow Blueprint of Running HeartbeatWorkflow</a>
+
+        <br />
+
+        <a target="_blank" href="/v1/workflow-instances?workflow=HeartbeatWorkflow&page=0&pageSize=2">List Workflow Instances with page size of 2</a>
+
+        <br />
+
+        <a target="_blank" href="/v1/workflow-instances?workflow=HeartbeatWorkflow">List all Workflow Instances </a>
+
+        <br />
+
+        <a target="_blank" href="/v1/activities">List all the available activities (not in the workflow)</a> added through the methods such as AddConsoleActivities() in Startup class.
+
+        <br />
+
+    </p>
+
+    <p>Click the following button to get the details of all workflow instances.</p>
+
+    <button class="btn btn-primary" onclick="GetAndSetWorkflowDetails()">Get workflow details</button>
+    <span>
+        <label>No of workflow instances: </label>
+        <label class="label label-default" id="workflowCountLabel"></label>
+    </span>
+    <p></p>
+    
+    <table class="table table-bordered" id="workflowDetailsTable">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">id</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //alert("Jquery is working fine dude...");
+            $("#workflowCorrelationsTable").hide();
+            $("#workflowCorrelationsTableFootNotes").hide();
+            $("#workflowCountLabel").text(0);
+            $("#workflowDetailsTable").hide();
+            workflowArray = []; // id, name, status, correlationId
+        });
+
+        function GetAndSetWorkflowDetails() {
+
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowInstanceCount"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+                    $("#workflowCountLabel").text(msg);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowDetails"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+
+                    $("#workflowDetailsTable").hide();
+
+                    if (msg.wfInstances !== null) {
+                        $("#workflowDetailsTable").show();
+
+                        $("#workflowDetailsTable").find('tbody').empty();
+                        msg.wfInstances.forEach(function (item, index, array) {
+                            $("#workflowDetailsTable").find('tbody')
+                                .append($('<tr>')
+                                    .append($('<td>')
+                                        .text(index)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.id)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.status)
+                                    )
+                                );
+                        });
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+    </script>
+}

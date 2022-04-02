@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Elsa.Core" Version="2.0.0.159" />
+    <PackageReference Include="Elsa.Abstractions" Version="2.0.0.159" />
+    <PackageReference Include="Elsa.Scripting.JavaScript" Version="2.0.0.159" />
+    <PackageReference Include="Elsa.Scripting.Liquid" Version="2.0.0.159" />
+    
+  </ItemGroup>
+
+</Project>

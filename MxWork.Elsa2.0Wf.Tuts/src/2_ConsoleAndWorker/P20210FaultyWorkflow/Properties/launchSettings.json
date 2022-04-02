@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "P20210FaultyWorkflow": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

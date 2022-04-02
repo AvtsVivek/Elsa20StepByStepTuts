@@ -1,0 +1,287 @@
+﻿
+@{
+    ViewData["Title"] = "Start Workflow";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+
+    <p>
+        Workflow is configured for this application.
+        <br />
+        To start the workflow send a post request as follows.
+        You may use <a href="https://www.postman.com/downloads/" target="_blank">Postman</a> for that.
+        Or, click the blue button below to send a ajax POST request from the browse itself.
+    </p>
+
+    # Register John.
+    <br />
+    POST /register
+    <br />
+    Content-Type: application/json
+    <br />
+    {<br />
+    "name": "John von Neumann",
+    "email": "john@gmail.com"<br />
+    }<br />
+    <br />
+    # Register Julia.
+    <br />
+    POST /register
+    <br />
+    Content-Type: application/json
+    <br />
+    {<br />
+    "name": "Julia Berger",
+    "email": "julia@gmail.com"<br />
+    }<br />
+
+    <p>
+        <br />
+        Click the following button to send a post request to start the workflow. This will lead to an api controller. Which will inturn invoke a workflow. A randomly generated user name and email are used.
+        <br />
+        <br />
+        <button class="btn btn-primary" onclick="SendPostRequestToStartWorkflow()">Start a new registration workflow</button>
+        <br />
+        <br />
+        Click the above button multiple times to start multiple instances of the workflow simultaneously.
+    </p>
+
+    <table class="table table-bordered" id="workflowCorrelationsTable">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Id</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Status*</th>
+                <th scope="col">Correlation Id</th>
+                <th scope="col">Resume Workflow</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <label id="workflowCorrelationsTableFootNotes">
+        *Note the status in the above table may show running. Most likely its suspended currently. This is because that status is returned from a running http activity which in this case is WriteHttpResponse.
+        And when that activity is being executed, that workflow is in the running status. 
+        The subsequent activity(the activity next to WriteHttpResponse activity that I just mentioned above) is the HttpEndpoint and thats where the workflow becomes suspended.
+        To get the currect status, click the button below.
+    </label>
+
+    <p>Click the following button to get the details of workflow instances.</p>
+
+    <button class="btn btn-primary" onclick="GetAndSetWorkflowDetails()">Get workflow details</button>
+    <br />
+    <br />
+    <span>
+        <label>No of workflows running: </label>
+        <label class="label label-default" id="workflowCountLabel"></label>
+    </span>
+
+    <table class="table table-bordered" id="workflowDetailsTable">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">id</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //alert("Jquery is working fine dude...");
+            $("#workflowCorrelationsTable").hide();
+            $("#workflowCorrelationsTableFootNotes").hide();
+            $("#workflowCountLabel").text(0);
+            $("#workflowDetailsTable").hide();
+            workflowArray = []; // id, name, status, correlationId
+        });
+
+        function SendPostRequestToStartWorkflow() {
+
+            var startWorkflowUrl = "/register"
+
+            var firstName = RandomStringGenerator(5);
+            var secondName = RandomStringGenerator(6);
+            var email = firstName + "123@gmail.com";
+            var fullName = firstName + " " + secondName;
+            var postData = { "Name": fullName, "Email": email };
+            var requestDataType = 'application/json; charset=utf-8';
+
+            $.ajax({
+                type: "POST",
+                url: startWorkflowUrl,
+                contentType: requestDataType,
+                data: JSON.stringify(postData),
+                success: function (msg) {
+                    var returnObject = JSON.parse(msg);
+                    if (returnObject.returnCode === "Success") {
+
+                        var workflowData = {};
+                        workflowData.Id = returnObject.workflowInstanceId;
+                        workflowData.Name = fullName;
+                        workflowData.Status = returnObject.workflowStatus;
+                        workflowData.CorrelationId = returnObject.correlationId;
+                        workflowArray.push(workflowData);
+
+                        PopulateWorkflowCorrelationsTable();
+                    }
+                    else
+                        alert("Something wrong.");
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+
+        }
+
+        function PopulateWorkflowCorrelationsTable() {
+            if (workflowArray.length > 0) {
+                $("#workflowCorrelationsTable").show();
+                $("#workflowCorrelationsTableFootNotes").show();
+                $("#workflowCorrelationsTable").find('tbody').empty();
+                workflowArray.forEach(function (item, index, array) {
+                    $("#workflowCorrelationsTable").find('tbody')
+                        .append($('<tr>')
+                            .append($('<td>')
+                                .text(index)
+                            )
+                            .append($('<td>')
+                                .text(item.Id)
+                            )
+                            .append($('<td>')
+                                .text(item.Name)
+                            )
+                            .append($('<td>')
+                                .text(item.Status)
+                            )
+                            .append($('<td>')
+                                .append($('<a>')
+                                    .attr("target", "_blank")
+                                    .attr('href', "/confirm?correlation=" + item.CorrelationId)
+                                    .text(item.CorrelationId))
+                            )
+                            .append($('<td>')
+                                .append($('<button>')
+                                    .click(function () {
+                                        CheckWorkflowStatus(item.Id, item.CorrelationId);
+                                    })
+                                    .addClass("btn btn-primary")
+                                    .text("Resume Workflow"))
+                            )
+                        );
+                });
+            }
+        }
+
+        function CheckWorkflowStatus(id, correlationId) {
+            var checkWorkflowUrl = "/api/WorkflowDetails/GetWorkflow/" + id;
+            $.ajax({
+                type: "GET",
+                url: checkWorkflowUrl,
+                success: function (wfInfo) {
+                    if (wfInfo.status == "Finished") {
+                        alert("The workflow with id " + id + " and correlation id " + correlationId + " is in the finished state. Cannot be resumed.");
+                        return;
+                    }
+                    if (wfInfo.status == "Suspended") {
+                        ResumeWorkflow(correlationId);
+                        return;
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        function ResumeWorkflow(correlationId) {
+            var resumeWorkflowUrl = "/confirm?correlation=" + correlationId
+            $.ajax({
+                type: "GET",
+                url: resumeWorkflowUrl,
+                success: function (confirmMessage) {
+                    alert(confirmMessage);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        function RandomStringGenerator(len) {
+            // Generates a random string of given length.
+            var text = "";
+
+            var charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (var i = 0; i < len; i++)
+                text += charset.charAt(Math.floor(Math.random() * charset.length));
+
+            return text;
+        }
+
+        function GetAndSetWorkflowDetails() {
+
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowInstanceCount"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+                    $("#workflowCountLabel").text(msg);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+
+            var getWorkflowDetailsUrl = "/api/WorkflowDetails/GetWorkflowDetails"
+            $.ajax({
+                type: "GET",
+                url: getWorkflowDetailsUrl,
+                dataType: "json",
+                success: function (msg) {
+
+                    $("#workflowDetailsTable").hide();
+
+                    if (msg.wfInstances !== null) {
+                        $("#workflowDetailsTable").show();
+
+                        $("#workflowDetailsTable").find('tbody').empty();
+                        msg.wfInstances.forEach(function (item, index, array) {
+                            $("#workflowDetailsTable").find('tbody')
+                                .append($('<tr>')
+                                    .append($('<td>')
+                                        .text(index)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.id)
+                                    )
+                                    .append($('<td>')
+                                        .text(item.status)
+                                    )
+                                );
+                        });
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+    </script>
+}

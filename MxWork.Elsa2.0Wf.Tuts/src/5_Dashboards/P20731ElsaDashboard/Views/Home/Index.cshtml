@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Home Workflow";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+
+    <p>
+        Elsa Workflows is configured for this application.
+        <br />
+        This example is built based on the
+        <a target="_blank" href="https://elsa-workflows.github.io/elsa-core/docs/next/quickstarts/quickstarts-aspnetcore-server-api-endpoints">Elsa Guide Here</a>.
+        <br />
+        Click the following link to elsa workflows dashboard.
+        <br />
+        <a target="_blank" href="/Elsa/Workflows">Elsa Workflow</a>
+        <br />
+        <u>Now for the Elsa Api.</u>
+        <br />
+        Api end points are configured. Open Startup.cs file and find the following line.
+        <br />
+        services.AddElsaApiEndpoints();
+        <br />
+        <a target="_blank" href="/v1/workflow-definitions">Workflow Definitions</a>
+        <br />
+        <a target="_blank" href="/v1/Workflow-instances">Workflow instances</a>
+        <br />
+        <a target="_blank" href="/v1/Workflow-registry">Workflow registry</a>
+        <br />
+        <a target="_blank" href="/v1/activities">Activities</a>
+        <br />
+        For this app to run, An running api backend is needed.
+        <br />
+        The app P20730ElsaServerApiHost is prepared for this purpose.
+        <br />
+        So run both of these simultaneously.
+        <br />
+        Note the port number of the running app P20730ElsaServerApiHost.
+        <br />
+        Ensure that port number matches Elsa.Server.BaseUrl in this app's appsettings.json.
+        <br />
+        Otherwise the following links would not work.
+        <br />
+        <br /> <a target="_blank" href="http://localhost:53142/swagger/index.html">Swagger UI</a>
+        <br /> <a target="_blank" href="http://localhost:53142/api-customroute/v1/swagger.json">Swagger Json</a>
+        <br />
+        To know more about this open startup.cs in P20730ElsaServerApiHost and find the following code to exxplore more.
+        <br /> services.AddElsaSwagger();
+        <br /> app.UseSwagger();
+        <br /> app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Elsa"));
+
+        <br />
+    </p>
+       
+
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // alert("Jquery is working fine dude...");
+        });
+
+        function GetAndSetWorkflowDetails() {
+
+        }
+
+    </script>
+}

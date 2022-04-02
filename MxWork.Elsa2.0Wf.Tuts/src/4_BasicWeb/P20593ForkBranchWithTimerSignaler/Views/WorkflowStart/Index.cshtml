@@ -1,0 +1,110 @@
+﻿@{
+    ViewData["Title"] = "Start Workflow";
+}
+
+<div class="text-left">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+    <p>
+        Workflow is configured for this application. Click the following start button to start an instance.
+    </p>
+    <button id="workflowStartButton" class="btn btn-primary" onclick="StartStopSignalerTimerWorkflowInstance('start')">Start</button>
+    <br />
+    <label id="messageAfterStartOfWorkflow"></label>
+    <br />
+    <label id="lblTimer"></label>
+    <br />
+    <label id="messageAfterTimerTimeouts"></label>
+    <br />
+    <button id="workflowResumeBySendingSignalButton" class="btn btn-primary" onclick="StartStopSignalerTimerWorkflowInstance('stop')">Send Signal to Stop workflow</button>
+
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#workflowStartButton').prop('disabled', false);
+            $('#messageAfterTimerTimeouts').html('&nbsp;')
+            $('#messageAfterStartOfWorkflow').html('&nbsp;');
+            $('#workflowResumeBySendingSignalButton').prop('disabled', true);
+        });
+
+
+        function StartTimer(minutes, seconds) {
+
+            var timer2 = minutes + ":" + seconds;
+            interval = setInterval(function () {
+
+                var timer = timer2.split(':');
+                var minutes = parseInt(timer[0], 10);
+                var seconds = parseInt(timer[1], 10);
+                --seconds;
+                minutes = (seconds < 0) ? --minutes : minutes;
+
+                if (minutes < 0) {
+                    clearInterval(interval);
+                    interval = null;
+                    $('#messageAfterTimerTimeouts').html("Its likely that the workflow is completed because of timer timeout. Check by clicking the Get workflow details button on Home index page");
+                    $('#workflowResumeBySendingSignalButton').prop('disabled', true);
+                }
+                seconds = (seconds < 0) ? 59 : seconds;
+                seconds = (seconds < 10) ? '0' + seconds : seconds;
+                $('#lblTimer').html(minutes + ':' + seconds);
+                timer2 = minutes + ':' + seconds;
+            }, 1000);
+        }
+
+        function StartStopSignalerTimerWorkflowInstance(command) {
+
+            var getWorkflowStartUrl = "";
+
+            if (command === 'start')
+                getWorkflowStartUrl = "/StartTimerSignalerWorkflow";
+
+            if (command === 'stop') {
+                var fullSignalUrl = $("#workflowResumeBySendingSignalButton").data("fullSignalUrl");
+                getWorkflowStartUrl = fullSignalUrl;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: getWorkflowStartUrl,
+                success: function (msg) {
+                    if (command === 'start') {
+                        $('#workflowStartButton').prop('disabled', true);
+
+                        var workflowInfo = JSON.parse(msg);
+                        //alert(workflowInfo.message);
+                        //alert(workflowInfo.signalUrl);
+                        //alert(workflowInfo.totalTimeout);
+                        //alert(workflowInfo.timeoutDays);
+                        //alert(workflowInfo.timeoutHours);
+                        //alert(workflowInfo.timeoutMinutes);
+                        //alert(workflowInfo.timeoutSeconds);
+
+                        StartTimer(workflowInfo.timeoutMinutes, workflowInfo.timeoutSeconds);
+                        $('#workflowResumeBySendingSignalButton').prop('disabled', false);
+                        $('#messageAfterStartOfWorkflow').html(workflowInfo.message);
+                        $("#workflowResumeBySendingSignalButton").data("fullSignalUrl", workflowInfo.signalUrl);
+
+                    }
+
+                    if (command === 'stop') {
+                        clearInterval(interval);
+                        interval = null;
+
+                        $('#workflowResumeBySendingSignalButton').prop('disabled', true);
+                        $('#messageAfterStartOfWorkflow').html(msg);
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+            
+        }
+        </script>
+}

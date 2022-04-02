@@ -1,0 +1,115 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    ViewData["Title"] = "Start Workflow";
+}
+
+<div class="text-left">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="w3-container">
+    <p>
+        Workflow is configured for this application. Click the following start button to start an instance.
+    </p>
+
+    <table align="left" width="500" border="1">
+
+        <tr align="center">
+            <td colspan="3">
+                <button id="workflowStartButton" class="btn btn-primary" onclick="StartRejectApproveWorkflowInstance('start')">Start</button>
+            </td>
+        </tr>
+        <tr align="center">
+            <td id="messageAfterStartOfWorkflow" colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <button id="workflowApproveButton" class="btn btn-primary" onclick="StartRejectApproveWorkflowInstance('approve')">Approve</button>
+            </td>
+            <td align="center">&nbsp;</td>
+            <td align="center">
+                <button id="workflowRejectButton" class="btn btn-primary" onclick="StartRejectApproveWorkflowInstance('reject')">Reject</button>
+            </td>
+        </tr>
+        <tr align="center">
+            <td colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+        <tr align="center">
+            <td id="finalMessageFromWorkflow" colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+
+        <tr align="center">
+            <td id="finalMessage" colspan="3">
+                &nbsp;
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#workflowStartButton').prop('disabled', false);
+            $('#workflowApproveButton').prop('disabled', true);
+            $('#workflowRejectButton').prop('disabled', true);
+            $('#finalMessage').html('&nbsp;');
+            $('#finalMessageFromWorkflow').html('&nbsp;');
+            $('#messageAfterStartOfWorkflow').html('&nbsp;');
+        });
+
+        function StartRejectApproveWorkflowInstance(command) {
+
+            var getWorkflowStartUrl = "";
+
+            if (command === 'start')
+                getWorkflowStartUrl = "/documents/start";
+
+            if (command === 'approve')
+                getWorkflowStartUrl = "/documents/approve";
+
+            if (command === 'reject')
+                getWorkflowStartUrl = "/documents/reject";
+
+            //alert(getWorkflowStartUrl);
+
+            $.ajax({
+                type: "GET",
+                url: getWorkflowStartUrl,
+                success: function (msg) {
+                    //alert(msg);
+                    if (command === 'start') {
+                        $('#workflowStartButton').prop('disabled', true);
+                        $('#workflowApproveButton').prop('disabled', false);
+                        $('#workflowRejectButton').prop('disabled', false);
+                        $('#messageAfterStartOfWorkflow').html(msg);
+                    }
+
+                    if (command === 'approve' || command === 'reject') {
+                        $('#workflowStartButton').prop('disabled', true);
+                        $('#workflowApproveButton').prop('disabled', true);
+                        $('#workflowRejectButton').prop('disabled', true);
+
+                        $('#finalMessage').html(msg);
+                        $('#finalMessageFromWorkflow').html('Done with the workflow');
+                        $('#messageAfterStartOfWorkflow').html('&nbsp;');
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+            
+        }
+        </script>
+}

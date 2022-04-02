@@ -1,0 +1,467 @@
+{
+  "$id": "1",
+  "definitionId": "fbcdc5df0ee44d60a3f278d73e79a593",
+  "versionId": "96da6543054d4c668cb78f5dd9459942",
+  "name": "WorkflowContextTrial",
+  "displayName": "Workflow Context Trial",
+  "version": 14,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "contextOptions": {
+    "$id": "4",
+    "contextType": "P20880Elsa.WorkflowContext.Models.BlogPost, P20880Elsa.WorkflowContext",
+    "contextFidelity": "Burst"
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "Suspended",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "5",
+      "activityId": "45778289-4b57-42f4-9c30-7327f738f63e",
+      "type": "HttpEndpoint",
+      "name": "HttpEndpoint1",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": true,
+      "properties": [
+        {
+          "$id": "6",
+          "name": "Path",
+          "expressions": {
+            "$id": "7",
+            "Literal": "/blog-posts"
+          }
+        },
+        {
+          "$id": "8",
+          "name": "Methods",
+          "expressions": {
+            "$id": "9",
+            "Json": "[\"GET\"]"
+          }
+        },
+        {
+          "$id": "10",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "11",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "12",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "13",
+            "Literal": "P20880Elsa.WorkflowContext.Models.BlogPost, P20880Elsa.WorkflowContext"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "TargetType": "Default"
+      }
+    },
+    {
+      "$id": "14",
+      "activityId": "dd0732a6-2ec1-40e0-82fe-5429d192cacc",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "15",
+          "name": "Content",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "16",
+            "JavaScript": "const model = {\r\n    blogPost: workflowContext,\r\n    workflowInstanceId: workflowInstanceId\r\n}\r\n\r\nreturn JSON.stringify(model, null, 2);"
+          }
+        },
+        {
+          "$id": "17",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "18",
+            "Literal": "application/json"
+          }
+        },
+        {
+          "$id": "19",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "20"
+          }
+        },
+        {
+          "$id": "21",
+          "name": "CharSet",
+          "expressions": {
+            "$id": "22"
+          }
+        },
+        {
+          "$id": "23",
+          "name": "ResponseHeaders",
+          "expressions": {
+            "$id": "24"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "25",
+      "activityId": "ee39f472-b3ff-44d3-b7e2-5cd757511413",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "26",
+          "name": "Signal",
+          "expressions": {
+            "$id": "27",
+            "Literal": "Publish"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "28",
+      "activityId": "2f20434d-ffcb-4da2-b1eb-603754c42f54",
+      "type": "RunJavaScript",
+      "displayName": "Run Java Script",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "29",
+          "name": "Script",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "30",
+            "Literal": "workflowContext.IsPublished = true;"
+          }
+        },
+        {
+          "$id": "31",
+          "name": "PossibleOutcomes",
+          "expressions": {
+            "$id": "32"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "33",
+      "activityId": "48c8e842-df44-494d-9d17-c3a6b9249b73",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "34",
+          "name": "Content",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "35",
+            "JavaScript": "JSON.stringify(workflowContext)"
+          }
+        },
+        {
+          "$id": "36",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "37",
+            "Literal": "application/json"
+          }
+        },
+        {
+          "$id": "38",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "39"
+          }
+        },
+        {
+          "$id": "40",
+          "name": "CharSet",
+          "expressions": {
+            "$id": "41"
+          }
+        },
+        {
+          "$id": "42",
+          "name": "ResponseHeaders",
+          "expressions": {
+            "$id": "43"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "44",
+      "activityId": "ce9260ce-cfb0-4082-b723-fcd5b293f98c",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "45",
+          "name": "From",
+          "expressions": {
+            "$id": "46",
+            "Literal": "workflow@elas.com"
+          }
+        },
+        {
+          "$id": "47",
+          "name": "To",
+          "expressions": {
+            "$id": "48",
+            "Json": "[\"WhoEver@Who.com\"]"
+          }
+        },
+        {
+          "$id": "49",
+          "name": "Subject",
+          "expressions": {
+            "$id": "50",
+            "Literal": "Workflow started"
+          }
+        },
+        {
+          "$id": "51",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "52"
+          }
+        },
+        {
+          "$id": "53",
+          "name": "Body",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "54",
+            "Literal": "Workflow has just started.",
+            "JavaScript": "const model = {\r\n    blogPost: workflowContext,\r\n    workflowInstanceId: workflowInstanceId\r\n}\r\n\r\nreturn `Workflow has started. <br /> \r\nWorkflow instance Id is <u> ${model.workflowInstanceId} </u>\r\n<br /> \r\nThe context object for this workflow instance in string format is as follows.\r\n<br />\r\n${JSON.stringify(model.blogPost, null, 2)}\r\n`"
+          }
+        },
+        {
+          "$id": "55",
+          "name": "Cc",
+          "expressions": {
+            "$id": "56"
+          }
+        },
+        {
+          "$id": "57",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "58"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "59",
+      "activityId": "191dd8be-7f18-4fa2-b7d9-22b02c5dc425",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "60",
+          "name": "From",
+          "expressions": {
+            "$id": "61",
+            "Literal": "workflow@elas.com"
+          }
+        },
+        {
+          "$id": "62",
+          "name": "To",
+          "expressions": {
+            "$id": "63",
+            "Json": "[\"user@someone.com\"]"
+          }
+        },
+        {
+          "$id": "64",
+          "name": "Subject",
+          "expressions": {
+            "$id": "65",
+            "Literal": "Workflow instance is now suspended"
+          }
+        },
+        {
+          "$id": "66",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "67"
+          }
+        },
+        {
+          "$id": "68",
+          "name": "Body",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "69",
+            "JavaScript": "const model = {\r\n    blogPost: workflowContext,\r\n    workflowInstanceId: workflowInstanceId\r\n}\r\n\r\nreturn `Workflow instance is now waiting for a signal and therefore is suspended.\r\n<br />\r\nSend a POST request to the following url\r\n<br />\r\n/v1/signals/publish/execute\r\n<br />\r\nContent-type should be application/json\r\n<br />\r\nThe raw - body should be as follows.\r\n<br />\r\n{<br />\r\n<pre>\r\n&#9;\"workflowInstanceId\": \"${model.workflowInstanceId}\"\r\n</pre>\r\n}\r\n<br />\r\n\r\n\r\n\r\n`"
+          }
+        },
+        {
+          "$id": "70",
+          "name": "Cc",
+          "expressions": {
+            "$id": "71"
+          }
+        },
+        {
+          "$id": "72",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "73"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "74",
+      "activityId": "15b8e468-6725-4ef7-a077-40f4c1469e77",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "75",
+          "name": "From",
+          "expressions": {
+            "$id": "76",
+            "Literal": "workflow@elas.com"
+          }
+        },
+        {
+          "$id": "77",
+          "name": "To",
+          "expressions": {
+            "$id": "78",
+            "Json": "[\"who@what.com\"]"
+          }
+        },
+        {
+          "$id": "79",
+          "name": "Subject",
+          "expressions": {
+            "$id": "80",
+            "Literal": "Workflow is now complete"
+          }
+        },
+        {
+          "$id": "81",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "82"
+          }
+        },
+        {
+          "$id": "83",
+          "name": "Body",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "84",
+            "JavaScript": "`Here is the final context data in JSON string format\r\n<br />\r\n\r\n${JSON.stringify(workflowContext)}\r\n`"
+          }
+        },
+        {
+          "$id": "85",
+          "name": "Cc",
+          "expressions": {
+            "$id": "86"
+          }
+        },
+        {
+          "$id": "87",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "88"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    }
+  ],
+  "connections": [
+    {
+      "$id": "89",
+      "sourceActivityId": "ee39f472-b3ff-44d3-b7e2-5cd757511413",
+      "targetActivityId": "2f20434d-ffcb-4da2-b1eb-603754c42f54",
+      "outcome": "Done"
+    },
+    {
+      "$id": "90",
+      "sourceActivityId": "2f20434d-ffcb-4da2-b1eb-603754c42f54",
+      "targetActivityId": "48c8e842-df44-494d-9d17-c3a6b9249b73",
+      "outcome": "Done"
+    },
+    {
+      "$id": "91",
+      "sourceActivityId": "45778289-4b57-42f4-9c30-7327f738f63e",
+      "targetActivityId": "ce9260ce-cfb0-4082-b723-fcd5b293f98c",
+      "outcome": "Done"
+    },
+    {
+      "$id": "92",
+      "sourceActivityId": "ce9260ce-cfb0-4082-b723-fcd5b293f98c",
+      "targetActivityId": "dd0732a6-2ec1-40e0-82fe-5429d192cacc",
+      "outcome": "Done"
+    },
+    {
+      "$id": "93",
+      "sourceActivityId": "dd0732a6-2ec1-40e0-82fe-5429d192cacc",
+      "targetActivityId": "191dd8be-7f18-4fa2-b7d9-22b02c5dc425",
+      "outcome": "Done"
+    },
+    {
+      "$id": "94",
+      "sourceActivityId": "191dd8be-7f18-4fa2-b7d9-22b02c5dc425",
+      "targetActivityId": "ee39f472-b3ff-44d3-b7e2-5cd757511413",
+      "outcome": "Done"
+    },
+    {
+      "$id": "95",
+      "sourceActivityId": "48c8e842-df44-494d-9d17-c3a6b9249b73",
+      "targetActivityId": "15b8e468-6725-4ef7-a077-40f4c1469e77",
+      "outcome": "Done"
+    }
+  ],
+  "id": "96da6543054d4c668cb78f5dd9459942"
+}

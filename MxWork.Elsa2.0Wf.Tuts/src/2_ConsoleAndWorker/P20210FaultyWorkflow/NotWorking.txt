@@ -1,0 +1,2 @@
+﻿The consumer workflow is not recieving the messages. 
+Not sure why

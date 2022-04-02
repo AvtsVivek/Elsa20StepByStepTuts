@@ -1,0 +1,63 @@
+{
+  "$id": "1",
+  "definitionId": "4ca38d4d772b49409ff840e85582974d",
+  "versionId": "2c8c088cd3f5462cb50b64de5360c628",
+  "name": "ChildWorkflowFireAndForget",
+  "displayName": "Child Workflow FireAndForget",
+  "description": "A Child Workflow which responds to a message from Parent workflow.\nThis needs a parent workflow. So this example has a corresponding parent workflow ParentWorkflowFireAndForget\nThis is created while doing the following tutorial.\nhttps://elsa-workflows.github.io/elsa-core/docs/next/guides/guides-parent-child-workflows#child-workflow",
+  "version": 3,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "4a7ff308-6571-4fc0-b018-804ec77be7d3",
+      "type": "WriteHttpResponse",
+      "name": "ChildHttpResponse",
+      "displayName": "HTTP Response",
+      "description": "Http Response Message from Child Workflow",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "6"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Content",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "8",
+            "Liquid": "Parent says: \"{{ Input.Message }}\""
+          }
+        },
+        {
+          "$id": "9",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "connections": [],
+  "id": "2c8c088cd3f5462cb50b64de5360c628"
+}

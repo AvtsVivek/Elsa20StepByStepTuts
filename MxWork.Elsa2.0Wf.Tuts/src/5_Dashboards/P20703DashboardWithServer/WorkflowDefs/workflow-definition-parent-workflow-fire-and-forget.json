@@ -1,0 +1,133 @@
+{
+  "$id": "1",
+  "definitionId": "7328c35550a940d68fdd342cf1d909d2",
+  "versionId": "c2d4e92627c54aa098f30a0f7a41917a",
+  "name": "ParentWorkflowFireAndForget",
+  "displayName": "Parent Workflow FireAndForget",
+  "description": "A workflow which will run a child workflow in fire and forget mode.\nFor this workflow to execute, a child workflow named ChildWorkflowFilreAndForget needs to be in published state.\nThis is based on the example guide here.\nhttps://elsa-workflows.github.io/elsa-core/docs/next/guides/guides-parent-child-workflows#parent-workflow",
+  "version": 7,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "df94123e-2076-41b3-b18b-d6456cbb99bf",
+      "type": "HttpEndpoint",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "Path",
+          "expressions": {
+            "$id": "6",
+            "Literal": "/elsaendpoints/parentfireandforget"
+          }
+        },
+        {
+          "$id": "7",
+          "name": "Methods",
+          "expressions": {
+            "$id": "8",
+            "Json": "[\"GET\"]"
+          }
+        },
+        {
+          "$id": "9",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "10"
+          }
+        },
+        {
+          "$id": "11",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "12"
+          }
+        }
+      ]
+    },
+    {
+      "$id": "13",
+      "activityId": "97162769-4a66-4e03-acb5-d7485459b030",
+      "type": "RunWorkflow",
+      "displayName": "Run Workflow",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "persistOutput": false,
+      "properties": [
+        {
+          "$id": "14",
+          "name": "WorkflowDefinitionId",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "15",
+            "Liquid": "{{ \"ChildWorkflowFireAndForget\" | workflow_definition_id: \"name\" }}"
+          }
+        },
+        {
+          "$id": "16",
+          "name": "Input",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "17",
+            "JavaScript": "({ Message: 'Hello child! How are you. Sending you this message in fire and forget mode' })"
+          }
+        },
+        {
+          "$id": "18",
+          "name": "Mode",
+          "expressions": {
+            "$id": "19"
+          }
+        },
+        {
+          "$id": "20",
+          "name": "TenantId",
+          "expressions": {
+            "$id": "21"
+          }
+        },
+        {
+          "$id": "22",
+          "name": "CorrelationId",
+          "expressions": {
+            "$id": "23"
+          }
+        },
+        {
+          "$id": "24",
+          "name": "ContextId",
+          "expressions": {
+            "$id": "25"
+          }
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "$id": "26",
+      "sourceActivityId": "df94123e-2076-41b3-b18b-d6456cbb99bf",
+      "targetActivityId": "97162769-4a66-4e03-acb5-d7485459b030",
+      "outcome": "Done"
+    }
+  ],
+  "id": "c2d4e92627c54aa098f30a0f7a41917a"
+}
